@@ -24,6 +24,7 @@ type Device = {
   id: string;
   system_name: string;
   hdd_capacity: string;
+  type: string;
 };
 
 const queryClient = new QueryClient({
@@ -62,8 +63,8 @@ function DeviceList() {
 
   if (data)
     return (
-      <div>
-        <div>
+      <div className="main">
+        <div className="heading">
           <h1>Devices</h1>
           <DialogTrigger>
             <Button>Add Device</Button>
@@ -73,6 +74,10 @@ function DeviceList() {
                   <form>
                     <TextField autoFocus>
                       <Label>Device Name</Label>
+                      <Input />
+                    </TextField>
+                    <TextField>
+                      <Label>Device Type</Label>
                       <Input />
                     </TextField>
                     <TextField>
@@ -89,20 +94,49 @@ function DeviceList() {
           </DialogTrigger>
         </div>
 
-        <GridList aria-label="Devices List" selectionMode="single">
-          {data.map((device: Device) => (
-            <GridListItem key={device.id}>
-              Name: {device.system_name} Capacity: {device.hdd_capacity}
-              <DialogTrigger>
-                <Button>...</Button>
-                <Popover>
-                  <Button>EDIT</Button>
-                  <Button>DELETE</Button>
-                </Popover>
-              </DialogTrigger>
-            </GridListItem>
-          ))}
-        </GridList>
+        <div>
+          {" "}
+          <GridList aria-label="Devices List" selectionMode="single">
+            {data.map((device: Device) => (
+              <GridListItem key={device.id}>
+                Name: {device.system_name} TYPE: {device.type} Capacity:{" "}
+                {device.hdd_capacity}
+                <DialogTrigger>
+                  <Button>...</Button>
+                  <Popover>
+                    <DialogTrigger>
+                      <Button>EDIT</Button>
+                      <Modal>
+                        <Dialog>
+                          {({ close }) => (
+                            <form>
+                              <TextField autoFocus>
+                                <Label>Device Name</Label>
+                                <Input />
+                              </TextField>
+                              <TextField>
+                                <Label>Device Type</Label>
+                                <Input />
+                              </TextField>
+                              <TextField>
+                                <Label>HDD Capacity</Label>
+                                <Input />
+                              </TextField>
+                              <Button onPress={close} style={{ marginTop: 8 }}>
+                                Submit
+                              </Button>
+                            </form>
+                          )}
+                        </Dialog>
+                      </Modal>
+                    </DialogTrigger>
+                    <Button>DELETE</Button>
+                  </Popover>
+                </DialogTrigger>
+              </GridListItem>
+            ))}
+          </GridList>
+        </div>
       </div>
     );
 }
