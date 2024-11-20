@@ -96,11 +96,18 @@ function DeviceList() {
 
         <div>
           {" "}
+          <h3>Devices</h3>
           <GridList aria-label="Devices List" selectionMode="single">
             {data.map((device: Device) => (
               <GridListItem key={device.id}>
-                Name: {device.system_name} TYPE: {device.type} Capacity:{" "}
-                {device.hdd_capacity}
+                <div className="device-item-label">
+                  <span className="device-item-system-name">
+                    {device.system_name}
+                  </span>
+                  <span className="device-item-specifics">
+                    {device.type} workstation - {device.hdd_capacity} GB
+                  </span>
+                </div>
                 <DialogTrigger>
                   <Button>...</Button>
                   <Popover>
