@@ -15,6 +15,7 @@ import {
   TextField,
   Input,
   Label,
+  Popover,
 } from "react-aria-components";
 
 const BASE_SERVICES_URI = import.meta.env.VITE_BASE_SERVICES_URI;
@@ -91,8 +92,14 @@ function DeviceList() {
         <GridList aria-label="Devices List" selectionMode="single">
           {data.map((device: Device) => (
             <GridListItem key={device.id}>
-              Name: {device.system_name} Capacity: {device.hdd_capacity}{" "}
-              <Button>...</Button>
+              Name: {device.system_name} Capacity: {device.hdd_capacity}
+              <DialogTrigger>
+                <Button>...</Button>
+                <Popover>
+                  <Button>EDIT</Button>
+                  <Button>DELETE</Button>
+                </Popover>
+              </DialogTrigger>
             </GridListItem>
           ))}
         </GridList>
