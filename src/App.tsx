@@ -5,6 +5,17 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
+import {
+  GridList,
+  GridListItem,
+  Button,
+  Dialog,
+  DialogTrigger,
+  Modal,
+  TextField,
+  Input,
+  Label,
+} from "react-aria-components";
 
 const BASE_SERVICES_URI = import.meta.env.VITE_BASE_SERVICES_URI;
 
@@ -28,7 +39,7 @@ function App() {
       <header>
         <img src={ninjaOneLogo} className="logo" alt="Ninja One Logo" />
       </header>
-      <Example />
+      <DeviceList />
     </QueryClientProvider>
   );
 }
@@ -38,7 +49,7 @@ async function getAllDevices(): Promise<Device[]> {
   return await response.json();
 }
 
-function Example() {
+function DeviceList() {
   const { isPending, error, data } = useQuery({
     queryKey: ["servicesData"],
     queryFn: getAllDevices,
@@ -51,14 +62,40 @@ function Example() {
   if (data)
     return (
       <div>
-        <h1>Devices</h1>
-        <ul>
+        <div>
+          <h1>Devices</h1>
+          <DialogTrigger>
+            <Button>Add Device</Button>
+            <Modal>
+              <Dialog>
+                {({ close }) => (
+                  <form>
+                    <TextField autoFocus>
+                      <Label>Device Name</Label>
+                      <Input />
+                    </TextField>
+                    <TextField>
+                      <Label>HDD Capacity</Label>
+                      <Input />
+                    </TextField>
+                    <Button onPress={close} style={{ marginTop: 8 }}>
+                      Submit
+                    </Button>
+                  </form>
+                )}
+              </Dialog>
+            </Modal>
+          </DialogTrigger>
+        </div>
+
+        <GridList aria-label="Devices List" selectionMode="single">
           {data.map((device: Device) => (
-            <li key={device.id}>
+            <GridListItem key={device.id}>
               Name: {device.system_name} Capacity: {device.hdd_capacity}{" "}
-            </li>
+              <Button>...</Button>
+            </GridListItem>
           ))}
-        </ul>
+        </GridList>
       </div>
     );
 }
