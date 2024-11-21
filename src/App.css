@@ -1,8 +1,4 @@
 #root {
-  --primary-color: #002a42;
-  --border-color: #e8e8ea;
-  --highlight-background: #f4f4f5;
-  --highlight-hover: #e8e8ea;
   height: 100vh;
   width: 100%;
 }
@@ -16,6 +12,7 @@ header {
   align-items: center;
   background-color: var(--primary-color);
   border-bottom: 1px solid var(--border-color);
+  z-index: 2;
 }
 
 .main {
@@ -93,23 +90,6 @@ header {
     margin-left: auto;
   }
 
-  .react-aria-Button {
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    height: 32px;
-    width: 32px;
-    transition: background 200ms;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &[data-hovered],
-    &[data-pressed] {
-      background: var(--highlight-hover);
-    }
-  }
-
   .device-item-label {
     display: flex;
     flex-direction: column;
@@ -145,7 +125,22 @@ header {
     text-decoration-skip-ink: none;
   }
 }
+.react-aria-Button {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  height: 32px;
+  width: 32px;
+  transition: background 200ms;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  &[data-hovered],
+  &[data-pressed] {
+    background: var(--highlight-hover);
+  }
+}
 .react-aria-ModalOverlay {
   position: fixed;
   top: 0;
@@ -159,13 +154,178 @@ header {
   z-index: 100;
 }
 
+.react-aria-Modal {
+  border-radius: 4px;
+  background: white;
+  color: var(--text-color);
+  border: 1px solid var(--gray-400);
+  outline: none;
+  width: 540px;
+  height: 388px;
+  padding: 24px;
+
+  .modal-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h3 {
+      font-family: Inter;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 29.05px;
+      text-align: left;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+    }
+  }
+
+  .react-aria-TextField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    color: var(--text-color);
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+
+    .react-aria-Input,
+    .react-aria-TextArea {
+      padding: 11px 12px;
+      margin: 0;
+      border: 1px solid var(--input-border-color);
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 16px;
+      outline: none;
+
+      &[data-focused] {
+        border-color: var(--text-color);
+      }
+
+      &[data-placeholder] {
+        color: var(--text-color-placeholder);
+      }
+    }
+  }
+
+  .react-aria-Select {
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    .react-aria-Button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 12px;
+      margin: 0;
+      border: 1px solid var(--input-border-color);
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 16px;
+      outline: none;
+      width: 100%;
+      height: 38px;
+    }
+
+    .react-aria-SelectValue {
+      &[data-placeholder] {
+        color: var(--text-color-placeholder);
+      }
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-actions-container {
+    align-self: end;
+    display: flex;
+    gap: 8px;
+
+    .react-aria-Button {
+      width: 72px;
+      height: 38px;
+      padding: 12px;
+
+      font-family: Inter;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 14px;
+      text-align: left;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+
+      &.cancel-button {
+        border: 1px solid var(--border-color);
+        color: var(--button-primary);
+      }
+
+      &.submit-button {
+        background: var(--button-primary);
+        color: white;
+      }
+    }
+  }
+}
+
+.react-aria-Popover[data-trigger="Select"] {
+  min-width: 200px;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+
+  .react-aria-ListBox {
+    display: block;
+    width: unset;
+    max-height: inherit;
+    min-height: unset;
+    border: none;
+
+    .react-aria-Header {
+      padding-left: 1.571rem;
+    }
+  }
+
+  .react-aria-ListBoxItem {
+    padding: 0.286rem 0.571rem 0.286rem 1.571rem;
+
+    &[data-focus-visible] {
+      outline: none;
+    }
+
+    &[data-selected] {
+      font-weight: 600;
+      background: unset;
+      color: var(--text-color);
+    }
+
+    &[data-focused],
+    &[data-pressed] {
+      background: var(--highlight-background);
+      color: var(--highlight-foreground);
+    }
+  }
+}
+
 .add-device-button {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
   padding: 12px;
-  background-color: #337ab7;
+  background-color: var(--button-primary);
   color: white;
   border: none;
   border-radius: 4px;

@@ -17,7 +17,12 @@ import {
   Input,
   Label,
   Popover,
+  Select,
+  ListBox,
+  SelectValue,
+  ListBoxItem,
 } from "react-aria-components";
+import { FormEvent } from "react";
 
 const BASE_SERVICES_URI = import.meta.env.VITE_BASE_SERVICES_URI;
 
@@ -79,6 +84,28 @@ function DeviceList() {
     },
   });
 
+  const addMutation = useMutation({
+    mutationFn: (formData) => {
+      return fetch(`http://${BASE_SERVICES_URI}/devices`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["servicesData"] });
+    },
+  });
+
+  const addDeviceSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    const formData = Object.fromEntries(new FormData(event.currentTarget));
+    console.log(formData);
+    addMutation.mutate(formData);
+  };
+
   if (isPending) return "Loading...";
 
   if (error) return "An error has occurred: " + error.message;
@@ -96,22 +123,59 @@ function DeviceList() {
             <Modal>
               <Dialog>
                 {({ close }) => (
-                  <form>
-                    <TextField autoFocus>
-                      <Label>Device Name</Label>
-                      <Input />
+                  <form className="add-device-form" onSubmit={addDeviceSubmit}>
+                    <div className="modal-heading">
+                      <h3>Add device</h3>
+                      <Button onPress={close}>
+                        <img src="/close.svg" alt="close icon" />
+                      </Button>
+                    </div>
+                    <TextField
+                      autoFocus
+                      name="system_name"
+                      type="text"
+                      isRequired
+                    >
+                      <Label>Device Name *</Label>
+                      <Input placeholder="MY MAC" />
                     </TextField>
-                    <TextField>
-                      <Label>Device Type</Label>
-                      <Input />
+                    <Select name="type" isRequired placeholder="Select type">
+                      <Label>Device Type *</Label>
+                      <Button>
+                        <SelectValue />
+                        <span aria-hidden="true">
+                          <img
+                            src="/select-chevron.svg"
+                            alt="select chevron icon"
+                          />
+                        </span>
+                      </Button>
+                      <Popover>
+                        <ListBox>
+                          <ListBoxItem id="WINDOWS">WINDOWS</ListBoxItem>
+                          <ListBoxItem id="MAC">MAC</ListBoxItem>
+                          <ListBoxItem id="LINUX">LINUX</ListBoxItem>
+                        </ListBox>
+                      </Popover>
+                    </Select>
+                    <TextField name="hdd_capacity" type="text" isRequired>
+                      <Label>HDD Capacity (GB) *</Label>
+                      <Input placeholder="64" />
                     </TextField>
-                    <TextField>
-                      <Label>HDD Capacity</Label>
-                      <Input />
-                    </TextField>
-                    <Button onPress={close} style={{ marginTop: 8 }}>
-                      Submit
-                    </Button>
+                    <div className="form-actions-container">
+                      <Button
+                        className="react-aria-Button cancel-button"
+                        onPress={close}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="react-aria-Button submit-button"
+                        type="submit"
+                      >
+                        Submit
+                      </Button>
+                    </div>
                   </form>
                 )}
               </Dialog>
@@ -124,11 +188,12 @@ function DeviceList() {
             <GridListItem
               className="react-aria-GridListItem list-heading"
               isDisabled={true}
+              textValue="Device"
             >
               Device
             </GridListItem>
             {data.map((device: Device) => (
-              <GridListItem key={device.id}>
+              <GridListItem key={device.id} textValue={device.system_name}>
                 <div className="device-item-label">
                   <div className="device-item-name-container">
                     <img src={IconMap[device.type]} alt="device type icon" />

@@ -1,8 +1,16 @@
 :root {
+  --primary-color: #002a42;
+  --border-color: #e8e8ea;
+  --input-border-color: #48446940;
+  --highlight-background: #f4f4f5;
+  --highlight-hover: #e8e8ea;
+  --text-color: #211f33;
+  --text-color-placeholder: #6e6d7a;
+  --button-primary: #337ab7;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #211f33;
+  color: var(--text-color);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
