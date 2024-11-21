@@ -89,7 +89,10 @@ function DeviceList() {
         <div className="heading">
           <h1>Devices</h1>
           <DialogTrigger>
-            <Button>Add Device</Button>
+            <Button className="add-device-button">
+              <img src="/plus.svg" alt="plus icon" />
+              Add Device
+            </Button>
             <Modal>
               <Dialog>
                 {({ close }) => (
