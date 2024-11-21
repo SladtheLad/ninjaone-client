@@ -253,6 +253,7 @@ header {
     align-self: end;
     display: flex;
     gap: 8px;
+    margin-top: 12px;
 
     .react-aria-Button {
       width: 72px;
