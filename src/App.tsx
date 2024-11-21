@@ -3,6 +3,7 @@ import "./App.css";
 import {
   QueryClient,
   QueryClientProvider,
+  useMutation,
   useQuery,
 } from "@tanstack/react-query";
 import {
@@ -51,10 +52,23 @@ async function getAllDevices(): Promise<Device[]> {
   return await response.json();
 }
 
+async function deleteDevice(id: string): Promise<void> {
+  await fetch(`http://${BASE_SERVICES_URI}/devices/${id}`, {
+    method: "DELETE",
+  });
+}
+
 function DeviceList() {
   const { isPending, error, data } = useQuery({
     queryKey: ["servicesData"],
     queryFn: getAllDevices,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteDevice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["servicesData"] });
+    },
   });
 
   if (isPending) return "Loading...";
@@ -137,7 +151,13 @@ function DeviceList() {
                         </Dialog>
                       </Modal>
                     </DialogTrigger>
-                    <Button>DELETE</Button>
+                    <button
+                      onClick={() => {
+                        deleteMutation.mutate(device.id);
+                      }}
+                    >
+                      DELETE
+                    </button>
                   </Popover>
                 </DialogTrigger>
               </GridListItem>
