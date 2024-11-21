@@ -209,9 +209,20 @@ function DeviceList() {
                   <Button>
                     <img src="/ellipsis.svg" alt="show more ellipsis" />
                   </Button>
-                  <Popover>
+                  <Popover
+                    className="react-aria-Popover device-options-popover"
+                    crossOffset={-63}
+                  >
+                    <Button
+                      className="react-aria-Button delete-button"
+                      onPress={() => {
+                        deleteMutation.mutate(device.id);
+                      }}
+                    >
+                      Delete
+                    </Button>
                     <DialogTrigger>
-                      <Button>EDIT</Button>
+                      <Button>Edit</Button>
                       <Modal>
                         <Dialog>
                           {({ close }) => (
@@ -236,13 +247,6 @@ function DeviceList() {
                         </Dialog>
                       </Modal>
                     </DialogTrigger>
-                    <Button
-                      onPress={() => {
-                        deleteMutation.mutate(device.id);
-                      }}
-                    >
-                      DELETE
-                    </Button>
                   </Popover>
                 </DialogTrigger>
               </GridListItem>

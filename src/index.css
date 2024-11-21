@@ -7,6 +7,8 @@
   --text-color: #211f33;
   --text-color-placeholder: #6e6d7a;
   --button-primary: #337ab7;
+  --error: #d53948;
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
