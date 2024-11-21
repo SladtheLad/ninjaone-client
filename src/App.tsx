@@ -21,11 +21,19 @@ import {
 
 const BASE_SERVICES_URI = import.meta.env.VITE_BASE_SERVICES_URI;
 
+type DeviceType = "WINDOWS" | "MAC" | "LINUX";
+
 type Device = {
   id: string;
   system_name: string;
   hdd_capacity: string;
-  type: string;
+  type: DeviceType;
+};
+
+const IconMap = {
+  WINDOWS: "/Windows.svg",
+  MAC: "/Apple.svg",
+  LINUX: "/Linux.svg",
 };
 
 const queryClient = new QueryClient({
@@ -109,21 +117,30 @@ function DeviceList() {
         </div>
 
         <div>
-          {" "}
-          <h3>Devices</h3>
           <GridList aria-label="Devices List" selectionMode="single">
+            <GridListItem
+              className="react-aria-GridListItem list-heading"
+              isDisabled={true}
+            >
+              Device
+            </GridListItem>
             {data.map((device: Device) => (
               <GridListItem key={device.id}>
                 <div className="device-item-label">
-                  <span className="device-item-system-name">
-                    {device.system_name}
-                  </span>
+                  <div className="device-item-name-container">
+                    <img src={IconMap[device.type]} alt="device type icon" />
+                    <span className="device-item-system-name">
+                      {device.system_name}
+                    </span>
+                  </div>
                   <span className="device-item-specifics">
                     {device.type} workstation - {device.hdd_capacity} GB
                   </span>
                 </div>
                 <DialogTrigger>
-                  <Button>...</Button>
+                  <Button>
+                    <img src="/ellipsis.svg" alt="show more ellipsis" />
+                  </Button>
                   <Popover>
                     <DialogTrigger>
                       <Button>EDIT</Button>
@@ -151,13 +168,13 @@ function DeviceList() {
                         </Dialog>
                       </Modal>
                     </DialogTrigger>
-                    <button
-                      onClick={() => {
+                    <Button
+                      onPress={() => {
                         deleteMutation.mutate(device.id);
                       }}
                     >
                       DELETE
-                    </button>
+                    </Button>
                   </Popover>
                 </DialogTrigger>
               </GridListItem>

@@ -2,14 +2,10 @@
   --primary-color: #002a42;
   --border-color: #e8e8ea;
   --highlight-background: #f4f4f5;
+  --highlight-hover: #e8e8ea;
   height: 100vh;
   width: 100%;
 }
-
-/* body {
-  background: white;
-  color: black;
-} */
 
 header {
   position: fixed;
@@ -44,19 +40,32 @@ header {
 .react-aria-GridListItem {
   display: flex;
   justify-content: space-between;
-  gap: 0.571rem;
-  min-height: 28px;
-  padding: 0.286rem 0.286rem 0.286rem 0.571rem;
-  outline: none;
+  align-items: center;
+  min-height: 52px;
+  padding: 8px 12px;
+  /* outline: none; */
   cursor: default;
   /* color: var(--text-color); */
-  font-size: 1.072rem;
   position: relative;
   transform: translateZ(0);
   border-bottom: 1px solid var(--border-color);
 
+  &.list-heading {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16.94px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    height: 32px;
+    min-height: unset;
+    padding: 7px 12px;
+    margin: 0;
+  }
+
   &[data-focus-visible] {
-    outline: 2px solid var(--focus-ring-color);
+    outline: 2px solid inherit;
     outline-offset: -2px;
   }
 
@@ -74,12 +83,6 @@ header {
       outline-color: var(--highlight-foreground);
       outline-offset: -4px;
     }
-
-    .react-aria-Button {
-      color: var(--highlight-foreground);
-      --highlight-hover: rgb(255 255 255 / 0.1);
-      --highlight-pressed: rgb(255 255 255 / 0.2);
-    }
   }
 
   &[data-disabled] {
@@ -93,27 +96,36 @@ header {
   .react-aria-Button {
     background: transparent;
     border: none;
-    font-size: 1.2rem;
-    line-height: 1.2em;
-    padding: 0.286rem 0.429rem;
+    border-radius: 4px;
+    height: 32px;
+    width: 32px;
     transition: background 200ms;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    &[data-hovered] {
-      background: var(--highlight-hover);
-    }
-
+    &[data-hovered],
     &[data-pressed] {
-      background: var(--highlight-pressed);
-      box-shadow: none;
+      background: var(--highlight-hover);
     }
   }
 
   .device-item-label {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 4px;
   }
 
+  .device-item-name-container {
+    display: flex;
+    gap: 4px;
+    height: 17px;
+    img {
+      height: 16px;
+      width: 16px;
+    }
+  }
   .device-item-system-name {
     font-family: Inter;
     font-size: 14px;
