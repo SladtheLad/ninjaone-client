@@ -72,6 +72,7 @@ function DeviceList() {
     null,
   );
 
+  const [openAddModal, setOpenAddModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
 
@@ -99,6 +100,7 @@ function DeviceList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["servicesData"] });
+      setOpenAddModal(false);
     },
   });
 
@@ -149,69 +151,70 @@ function DeviceList() {
       <div className="main">
         <div className="heading">
           <h1>Devices</h1>
-          <DialogTrigger>
-            <Button className="add-device-button">
+          <DialogTrigger isOpen={openAddModal}>
+            <Button
+              className="add-device-button"
+              onPress={() => setOpenAddModal(true)}
+            >
               <img src="/plus.svg" alt="plus icon" />
               Add Device
             </Button>
             <Modal>
               <Dialog>
-                {({ close }) => (
-                  <form className="add-device-form" onSubmit={addDeviceSubmit}>
-                    <div className="modal-heading">
-                      <h3>Add device</h3>
-                      <Button onPress={close}>
-                        <img src="/close.svg" alt="close icon" />
-                      </Button>
-                    </div>
-                    <TextField
-                      autoFocus
-                      name="system_name"
-                      type="text"
-                      isRequired
+                <form className="add-device-form" onSubmit={addDeviceSubmit}>
+                  <div className="modal-heading">
+                    <h3>Add device</h3>
+                    <Button onPress={() => setOpenAddModal(false)}>
+                      <img src="/close.svg" alt="close icon" />
+                    </Button>
+                  </div>
+                  <TextField
+                    autoFocus
+                    name="system_name"
+                    type="text"
+                    isRequired
+                  >
+                    <Label>Device Name *</Label>
+                    <Input placeholder="MY MAC" />
+                  </TextField>
+                  <Select name="type" isRequired placeholder="Select type">
+                    <Label>Device Type *</Label>
+                    <Button>
+                      <SelectValue />
+                      <span aria-hidden="true">
+                        <img
+                          src="/select-chevron.svg"
+                          alt="select chevron icon"
+                        />
+                      </span>
+                    </Button>
+                    <Popover>
+                      <ListBox>
+                        <ListBoxItem id="WINDOWS">WINDOWS</ListBoxItem>
+                        <ListBoxItem id="MAC">MAC</ListBoxItem>
+                        <ListBoxItem id="LINUX">LINUX</ListBoxItem>
+                      </ListBox>
+                    </Popover>
+                  </Select>
+                  <TextField name="hdd_capacity" type="text" isRequired>
+                    <Label>HDD Capacity (GB) *</Label>
+                    <Input placeholder="64" />
+                  </TextField>
+                  <div className="form-actions-container">
+                    <Button
+                      className="react-aria-Button cancel-button"
+                      onPress={() => setOpenAddModal(false)}
                     >
-                      <Label>Device Name *</Label>
-                      <Input placeholder="MY MAC" />
-                    </TextField>
-                    <Select name="type" isRequired placeholder="Select type">
-                      <Label>Device Type *</Label>
-                      <Button>
-                        <SelectValue />
-                        <span aria-hidden="true">
-                          <img
-                            src="/select-chevron.svg"
-                            alt="select chevron icon"
-                          />
-                        </span>
-                      </Button>
-                      <Popover>
-                        <ListBox>
-                          <ListBoxItem id="WINDOWS">WINDOWS</ListBoxItem>
-                          <ListBoxItem id="MAC">MAC</ListBoxItem>
-                          <ListBoxItem id="LINUX">LINUX</ListBoxItem>
-                        </ListBox>
-                      </Popover>
-                    </Select>
-                    <TextField name="hdd_capacity" type="text" isRequired>
-                      <Label>HDD Capacity (GB) *</Label>
-                      <Input placeholder="64" />
-                    </TextField>
-                    <div className="form-actions-container">
-                      <Button
-                        className="react-aria-Button cancel-button"
-                        onPress={close}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        className="react-aria-Button submit-button"
-                        type="submit"
-                      >
-                        Submit
-                      </Button>
-                    </div>
-                  </form>
-                )}
+                      Cancel
+                    </Button>
+                    <Button
+                      className="react-aria-Button submit-button"
+                      type="submit"
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </form>
               </Dialog>
             </Modal>
           </DialogTrigger>
