@@ -125,7 +125,7 @@ header {
     font-family: Inter;
     font-size: 14px;
     font-weight: 500;
-    line-height: 16.94px;
+    line-height: 1.4;
     text-align: left;
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
@@ -323,6 +323,11 @@ header {
     outline: none;
     width: 100%;
     height: 38px;
+
+    &[data-focused],
+    &[data-focus-visible] {
+      border-color: var(--text-color);
+    }
   }
 
   .react-aria-SelectValue {
