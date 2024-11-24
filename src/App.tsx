@@ -22,13 +22,14 @@ import {
   SelectValue,
   ListBoxItem,
 } from "react-aria-components";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
+import useFilterAndSort from "./useFilterAndSort";
 
 const BASE_SERVICES_URI = import.meta.env.VITE_BASE_SERVICES_URI;
 
 type DeviceType = "WINDOWS" | "MAC" | "LINUX";
 
-type Device = {
+export type Device = {
   id: string;
   system_name: string;
   hdd_capacity: string;
@@ -71,12 +72,25 @@ async function deleteDevice(id: string): Promise<void> {
   });
 }
 
+export type SortDirection = "name_asc" | "name_desc" | "hdd_asc" | "hdd_desc";
+export type FilterType = "ALL" | DeviceType;
+
 function DeviceList() {
+  const [filterQuery, setFilterQuery] = useState<string>("");
+  const [filterType, setFilterType] = useState<FilterType>("ALL");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("name_asc");
+
   const { isPending, error, data } = useQuery({
     queryKey: ["servicesData"],
     queryFn: getAllDevices,
   });
 
+  const { filteredData } = useFilterAndSort(
+    data,
+    filterQuery,
+    filterType,
+    sortDirection,
+  );
   const deleteMutation = useMutation({
     mutationFn: deleteDevice,
     onSuccess: () => {
@@ -130,7 +144,7 @@ function DeviceList() {
 
   if (error) return "An error has occurred: " + error.message;
 
-  if (data)
+  if (filteredData)
     return (
       <div className="main">
         <div className="heading">
@@ -202,7 +216,39 @@ function DeviceList() {
             </Modal>
           </DialogTrigger>
         </div>
-
+        <div className="filter-and-sort-container">
+          <TextField type="text">
+            <Label hidden={true}>Search by name</Label>
+            <Input
+              value={filterQuery}
+              onChange={(event) => setFilterQuery(event.target.value)}
+              placeholder="Search by name"
+            />
+          </TextField>
+          <Select
+            name="filter-by-type"
+            placeholder={`Device Type: ${filterType}`}
+            onSelectionChange={(value) => {
+              setFilterType(value as DeviceType);
+            }}
+          >
+            <Label hidden={true}>Filter by type</Label>
+            <Button>
+              <SelectValue />
+              <span aria-hidden="true">
+                <img src="/select-chevron.svg" alt="select chevron icon" />
+              </span>
+            </Button>
+            <Popover>
+              <ListBox>
+                <ListBoxItem id="ALL">ALL</ListBoxItem>
+                <ListBoxItem id="WINDOWS">WINDOWS</ListBoxItem>
+                <ListBoxItem id="MAC">MAC</ListBoxItem>
+                <ListBoxItem id="LINUX">LINUX</ListBoxItem>
+              </ListBox>
+            </Popover>
+          </Select>
+        </div>
         <div>
           <GridList aria-label="Devices List" selectionMode="single">
             <GridListItem
@@ -212,7 +258,7 @@ function DeviceList() {
             >
               Device
             </GridListItem>
-            {data.map((device: Device) => (
+            {filteredData.map((device: Device) => (
               <GridListItem key={device.id} textValue={device.system_name}>
                 <div className="device-item-label">
                   <div className="device-item-name-container">
