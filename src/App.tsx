@@ -72,6 +72,9 @@ function DeviceList() {
     null,
   );
 
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+
   const { isPending, error, data } = useQuery({
     queryKey: ["servicesData"],
     queryFn: getAllDevices,
@@ -83,12 +86,6 @@ function DeviceList() {
     filterType,
     sortDirection,
   );
-  const deleteMutation = useMutation({
-    mutationFn: deleteDevice,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["servicesData"] });
-    },
-  });
 
   const addMutation = useMutation({
     mutationFn: (formData) => {
@@ -123,6 +120,7 @@ function DeviceList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["servicesData"] });
+      setOpenEditModal(false);
     },
   });
 
@@ -131,6 +129,14 @@ function DeviceList() {
     const formData = Object.fromEntries(new FormData(event.currentTarget));
     editMutation.mutate({ ...formData, id: event.currentTarget.id });
   };
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteDevice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["servicesData"] });
+      setOpenDeleteModal(false);
+    },
+  });
 
   // design lacking
   if (isPending) return "Loading...";
@@ -313,122 +319,115 @@ function DeviceList() {
                   className="react-aria-Popover device-options-popover"
                   crossOffset={-63}
                 >
-                  <DialogTrigger>
-                    <Button className="react-aria-Button delete-button">
+                  <DialogTrigger isOpen={openDeleteModal}>
+                    <Button
+                      className="react-aria-Button delete-button"
+                      onPress={() => setOpenDeleteModal(true)}
+                    >
                       Delete
                     </Button>
                     <Modal>
                       <Dialog>
-                        {({ close }) => (
-                          <div className="delete-device-modal">
-                            <div className="modal-heading">
-                              <h3>Delete device?</h3>
-                              <Button onPress={close}>
-                                <img src="/close.svg" alt="close icon" />
-                              </Button>
-                            </div>
-                            <p>
-                              You are about to delete the device
-                              <span> {device.system_name}</span>. This action
-                              cannot be undone.
-                            </p>
-                            <div className="modal-actions">
-                              <Button
-                                className="react-aria-Button cancel-button"
-                                onPress={close}
-                                autoFocus={true}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                className="react-aria-Button delete-button"
-                                onPress={() => {
-                                  deleteMutation.mutate(device.id);
-                                  close();
-                                }}
-                              >
-                                Delete
-                              </Button>
-                            </div>
+                        <div className="delete-device-modal">
+                          <div className="modal-heading">
+                            <h3>Delete device?</h3>
+                            <Button onPress={() => setOpenDeleteModal(false)}>
+                              <img src="/close.svg" alt="close icon" />
+                            </Button>
                           </div>
-                        )}
+                          <p>
+                            You are about to delete the device
+                            <span> {device.system_name}</span>. This action
+                            cannot be undone.
+                          </p>
+                          <div className="modal-actions">
+                            <Button
+                              className="react-aria-Button cancel-button"
+                              onPress={() => setOpenDeleteModal(false)}
+                              autoFocus={true}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              className="react-aria-Button delete-button"
+                              onPress={() => {
+                                deleteMutation.mutate(device.id);
+                                setOpenDeleteModal(false);
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
                       </Dialog>
                     </Modal>
                   </DialogTrigger>
-                  <DialogTrigger>
-                    <Button>Edit</Button>
+                  <DialogTrigger isOpen={openEditModal}>
+                    <Button onPress={() => setOpenEditModal(true)}>Edit</Button>
                     <Modal>
                       <Dialog>
-                        {({ close }) => (
-                          <form
-                            className="edit-device-form"
-                            onSubmit={editDeviceSubmit}
-                            id={device.id}
+                        <form
+                          className="edit-device-form"
+                          onSubmit={editDeviceSubmit}
+                          id={device.id}
+                        >
+                          <div className="modal-heading">
+                            <h3>Edit device</h3>
+                            <Button onPress={() => setOpenEditModal(false)}>
+                              <img src="/close.svg" alt="close icon" />
+                            </Button>
+                          </div>
+                          <TextField
+                            autoFocus
+                            name="system_name"
+                            type="text"
+                            isRequired
                           >
-                            <div className="modal-heading">
-                              <h3>Edit device</h3>
-                              <Button onPress={close}>
-                                <img src="/close.svg" alt="close icon" />
-                              </Button>
-                            </div>
-                            <TextField
-                              autoFocus
-                              name="system_name"
-                              type="text"
-                              isRequired
+                            <Label>Device Name *</Label>
+                            <Input placeholder={device.system_name} />
+                          </TextField>
+                          <Select
+                            name="type"
+                            isRequired
+                            placeholder={device.type}
+                          >
+                            <Label>Device Type *</Label>
+                            <Button>
+                              <SelectValue />
+                              <span aria-hidden="true">
+                                <img
+                                  src="/select-chevron.svg"
+                                  alt="select chevron icon"
+                                />
+                              </span>
+                            </Button>
+                            <Popover>
+                              <ListBox>
+                                <ListBoxItem id="WINDOWS">WINDOWS</ListBoxItem>
+                                <ListBoxItem id="MAC">MAC</ListBoxItem>
+                                <ListBoxItem id="LINUX">LINUX</ListBoxItem>
+                              </ListBox>
+                            </Popover>
+                          </Select>
+                          <TextField name="hdd_capacity" type="text" isRequired>
+                            <Label>HDD Capacity (GB) *</Label>
+                            <Input placeholder={device.hdd_capacity} />
+                          </TextField>
+                          <div className="form-actions-container">
+                            <Button
+                              className="react-aria-Button cancel-button"
+                              onPress={() => setOpenEditModal(false)}
                             >
-                              <Label>Device Name *</Label>
-                              <Input placeholder={device.system_name} />
-                            </TextField>
-                            <Select
-                              name="type"
-                              isRequired
-                              placeholder={device.type}
+                              Cancel
+                            </Button>
+                            <Button
+                              className="react-aria-Button submit-button"
+                              type="submit"
                             >
-                              <Label>Device Type *</Label>
-                              <Button>
-                                <SelectValue />
-                                <span aria-hidden="true">
-                                  <img
-                                    src="/select-chevron.svg"
-                                    alt="select chevron icon"
-                                  />
-                                </span>
-                              </Button>
-                              <Popover>
-                                <ListBox>
-                                  <ListBoxItem id="WINDOWS">
-                                    WINDOWS
-                                  </ListBoxItem>
-                                  <ListBoxItem id="MAC">MAC</ListBoxItem>
-                                  <ListBoxItem id="LINUX">LINUX</ListBoxItem>
-                                </ListBox>
-                              </Popover>
-                            </Select>
-                            <TextField
-                              name="hdd_capacity"
-                              type="text"
-                              isRequired
-                            >
-                              <Label>HDD Capacity (GB) *</Label>
-                              <Input placeholder={device.hdd_capacity} />
-                            </TextField>
-                            <div className="form-actions-container">
-                              <Button
-                                className="react-aria-Button cancel-button"
-                                onPress={close}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                className="react-aria-Button submit-button"
-                                type="submit"
-                              >
-                                Submit
-                              </Button>
-                            </div>
-                          </form>
-                        )}
+                              Submit
+                            </Button>
+                          </div>
+                        </form>
                       </Dialog>
                     </Modal>
                   </DialogTrigger>
