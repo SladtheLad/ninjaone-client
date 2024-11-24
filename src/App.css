@@ -36,7 +36,17 @@ header {
 
 .filter-and-sort-container {
   display: flex;
+  align-items: center;
   gap: 16px;
+
+  .react-aria-TextField,
+  .react-aria-Select {
+    max-width: 270px;
+  }
+
+  .react-aria-Button {
+    margin-left: auto;
+  }
 }
 
 .react-aria-GridListItem {

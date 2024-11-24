@@ -23,31 +23,47 @@ function useFilterAndSort(
         });
         return filteredByType;
       }
+      return filteredByQuery;
     }
   }, [data, filterQuery, filterByType]);
 
   // Apply sorting
   const sorted = useMemo(() => {
     if (!sortBy) return filtered;
+    if (filtered) {
+      if (sortBy === "name_asc") {
+        return filtered.sort((a, b) => {
+          const aValue = a.system_name;
+          const bValue = b.system_name;
 
-    // return [...filtered].sort((a, b) => {
-    //   const aValue = a[sortBy];
-    //   const bValue = b[sortBy];
+          return aValue.localeCompare(bValue);
+        });
+      }
+      if (sortBy === "name_desc") {
+        return filtered.sort((a, b) => {
+          const aValue = a.system_name;
+          const bValue = b.system_name;
 
-    //   if (aValue < bValue) {
-    //     return sortOrder === "asc" ? -1 : 1;
-    //   } else if (aValue > bValue) {
-    //     return sortOrder === "asc" ? 1 : -1;
-    //   } else {
-    //     return 0;
-    //   }
-    // });
+          return bValue.localeCompare(aValue);
+        });
+      }
+
+      if (sortBy === "hdd_asc") {
+        return filtered.sort((a, b) => {
+          return Number(a.hdd_capacity) > Number(b.hdd_capacity) ? 1 : -1;
+        });
+      }
+
+      if (sortBy === "hdd_desc") {
+        return filtered.sort((a, b) => {
+          return Number(a.hdd_capacity) < Number(b.hdd_capacity) ? 1 : -1;
+        });
+      }
+    }
   }, [filtered, sortBy]);
 
-  console.log({ filtered, sorted, filterQuery, filterByType });
-
   return {
-    filteredData: filtered,
+    filteredData: sorted,
   };
 }
 
