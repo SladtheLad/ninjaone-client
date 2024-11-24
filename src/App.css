@@ -168,6 +168,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: row;
     h3 {
       font-family: Inter;
       font-size: 24px;
@@ -176,6 +177,34 @@ header {
       text-align: left;
       text-underline-position: from-font;
       text-decoration-skip-ink: none;
+    }
+
+    .react-aria-Button {
+      align-self: start;
+    }
+  }
+
+  &:has(.delete-device-modal) {
+    height: auto;
+    p {
+      font-family: Inter;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 16.94px;
+      text-align: left;
+      text-underline-position: from-font;
+      text-decoration-skip-ink: none;
+      margin: 0;
+
+      span {
+        font-family: Inter;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 16.94px;
+        text-align: left;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+      }
     }
   }
 
@@ -243,15 +272,18 @@ header {
     }
   }
 
-  form {
+  form,
+  div {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
-  .form-actions-container {
+  .form-actions-container,
+  .modal-actions {
     align-self: end;
     display: flex;
+    flex-direction: row;
     gap: 8px;
     margin-top: 12px;
 
@@ -275,6 +307,10 @@ header {
 
       &.submit-button {
         background: var(--button-primary);
+        color: white;
+      }
+      &.delete-button {
+        background-color: var(--error);
         color: white;
       }
     }

@@ -233,14 +233,48 @@ function DeviceList() {
                     className="react-aria-Popover device-options-popover"
                     crossOffset={-63}
                   >
-                    <Button
-                      className="react-aria-Button delete-button"
-                      onPress={() => {
-                        deleteMutation.mutate(device.id);
-                      }}
-                    >
-                      Delete
-                    </Button>
+                    <DialogTrigger>
+                      <Button className="react-aria-Button delete-button">
+                        Delete
+                      </Button>
+                      <Modal>
+                        <Dialog>
+                          {({ close }) => (
+                            <div className="delete-device-modal">
+                              <div className="modal-heading">
+                                <h3>Delete device?</h3>
+                                <Button onPress={close}>
+                                  <img src="/close.svg" alt="close icon" />
+                                </Button>
+                              </div>
+                              <p>
+                                You are about to delete the device
+                                <span> {device.system_name}</span>. This action
+                                cannot be undone.
+                              </p>
+                              <div className="modal-actions">
+                                <Button
+                                  className="react-aria-Button cancel-button"
+                                  onPress={close}
+                                  autoFocus={true}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="react-aria-Button delete-button"
+                                  onPress={() => {
+                                    deleteMutation.mutate(device.id);
+                                    close();
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </Dialog>
+                      </Modal>
+                    </DialogTrigger>
                     <DialogTrigger>
                       <Button>Edit</Button>
                       <Modal>
